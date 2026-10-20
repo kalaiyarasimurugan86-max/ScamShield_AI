@@ -61,7 +61,9 @@ def duration(path: Path) -> float:
 
 
 def tts(text: str, out: Path) -> Path:
-    """Speech for `text` as an mp3: Amazon Polly (neural) if AWS works, else macOS `say`."""
+    """Speech for `text` as an mp3: Amazon Polly (neural) if AWS works, macOS `say` on Mac,
+    Windows PowerShell SpeechSynthesizer as a fallback on Windows."""
+    # 1. Amazon Polly
     try:
         import boto3
 
@@ -72,13 +74,35 @@ def tts(text: str, out: Path) -> Path:
                                     Engine="neural")
         out.write_bytes(r["AudioStream"].read())
         return out
-    except Exception as e:  # noqa: BLE001
-        if shutil.which("say"):
-            aiff = out.with_suffix(".aiff")
-            subprocess.run(["say", "-r", "185", "-o", str(aiff), text], check=True)
-            run([ffmpeg(), "-y", "-i", str(aiff), str(out)])
-            return out
-        raise RuntimeError(f"no text-to-speech available (Polly failed: {e}; no `say`)") from e
+    except Exception:  # noqa: BLE001
+        pass
+
+    # 2. macOS `say`
+    if shutil.which("say"):
+        aiff = out.with_suffix(".aiff")
+        subprocess.run(["say", "-r", "185", "-o", str(aiff), text], check=True)
+        run([ffmpeg(), "-y", "-i", str(aiff), str(out)])
+        return out
+
+    # 3. Windows PowerShell SpeechSynthesizer (no credentials needed)
+    if sys.platform == "win32":
+        wav = out.with_suffix(".wav")
+        # escape single quotes in text for PowerShell
+        safe = text.replace("'", "''")
+        ps_cmd = (
+            f"Add-Type -AssemblyName System.Speech; "
+            f"$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+            f"$s.Rate = 1; "
+            f"$s.SetOutputToWaveFile('{wav}'); "
+            f"$s.Speak('{safe}'); "
+            f"$s.Dispose()"
+        )
+        subprocess.run(["powershell", "-NoProfile", "-Command", ps_cmd], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        run([ffmpeg(), "-y", "-i", str(wav), str(out)])
+        return out
+
+    raise RuntimeError("no text-to-speech available (Polly failed; no `say`; not on Windows)")
 
 
 def facts_for(turn_out: dict) -> str:

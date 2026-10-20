@@ -1,171 +1,133 @@
-# Strands Decider Hackathon Kit
+# ScamShield AI
 
-**From an idea to a complete Agent Experience Hackathon submission in about 30 minutes.**
+**ScamShield AI analyzes payment transaction descriptions and classifies them as Low Risk, High Risk, or Needs Review — before you send a single rupee.**
 
-**New here? Follow [the step-by-step guide](docs/GETTING-STARTED.md).**
+An agent on AWS that hands one decision to **Strands Decider 2B** and the conversation to **Amazon Bedrock**. Decision pattern: `#policy`. Tags: `#strands-decider-2b` `#policy`.
 
-You describe your agent. Kiro builds it on top of this kit, then:
-- benchmarks its decision against an Amazon Bedrock LLM;
-- deploys it to AWS;
-- records the demo video;
-- drafts the AWS Builder Center article;
-- writes the README;
-- publishes the public repo.
+- Video: (add the YouTube/Vimeo link)
+- Article: (add the AWS Builder Center link)
+- Deployed: run `./kit deploy`
 
-You review, upload the video, publish the article and submit.
+## The project
 
-Made by **AWS User Group Madurai** for the
-[Agent Experience Hackathon: Strands Decider](https://builder.aws.com/build/hackathons/4f50957c-1d08-37ab-b11c-97516b9adeb4/agent-experience-hackathon-strands-decider)
-(16 to 23 October 2026). If you use it, keep the line *"Built with the AWS User Group Madurai
-Strands Decider hackathon kit"* in your README, article and video. It is already there.
+- **Pitch:** ScamShield AI analyzes payment transaction descriptions and classifies them as Low Risk, High Risk, or Needs Review — before you send a single rupee.
+- **Who it is for:** anyone making or receiving digital payments (UPI, bank transfer, online requests) who wants a quick scam check before acting.
+- **Features:**
+  - describe any payment request in plain language and get an instant risk verdict;
+  - Strands Decider 2B checks three risk signals: unknown recipient, urgency pressure, unusual amount or method;
+  - red flag explanation with tailored safety tips;
+  - Needs Review cases ask for more detail instead of guessing;
+  - deployed on Amazon Bedrock AgentCore Runtime.
+- **The decision handed to Strands Decider 2B:** given a transaction description, does it show signs of being a scam? (`#policy`)
+- **Why a decision model:** risk classification must be fast, consistent and explainable — a calibrated probability per signal is far more useful than a freeform LLM guess.
+- **Amazon Bedrock:** the conversation and tool use (Amazon Nova Pro by default).
 
+
+
+## How it is built
+
+Strands Agents with Amazon Bedrock for the generative part, the tools in `agent/tools.py`, deployed to Amazon Bedrock AgentCore Runtime, and one decision handed to Strands Decider 2B at a clear seam in the agent's path.
+
+Every Amazon Bedrock model id is set in `.env` (`BEDROCK_MODEL_ID`, and `BEDROCK_SMALL/MEDIUM/LARGE_MODEL_ID` for routing), Amazon Nova by default.
+
+![Architecture](submission/article/img/architecture.png)
+
+## Reusable decision pattern: payment scam risk classifier  (#policy)
+
+The pattern lives in [`agent/decision.py`](agent/decision.py), labelled `REUSABLE DECISION PATTERN`. It contains the typed questions and their options, the wiring that puts the decision in the agent's path, and a note on how to reuse it:
+
+```text
+REUSABLE DECISION PATTERN: payment scam risk classifier  (#policy)
+
+What it does
+    Before the agent responds to a payment-related message, Strands Decider 2B reads the
+    transaction description and answers three risk questions:
+    - Is the recipient unknown or unverified?
+    - Is there urgency pressure ("act now", "urgent", "limited time")?
+    - Is the amount or payment method unusual or suspicious?
+    The answers are combined into a verdict: Low Risk, High Risk, or Needs Review.
+    High Risk blocks the action with a warning; Needs Review asks the user for more detail;
+    Low Risk lets the conversation continue normally.
+
+Typed questions and options
+    unknown_recipient (noul): P(yes) = probability the recipient is unknown/unverified.
+    urgency_pressure  (noul): P(yes) = probability urgency is being used to rush the user.
+    unusual_payment   (noul): P(yes) = probability the amount or method is suspicious.
+    See QUESTIONS below for full descriptions.
+
+Wiring
+    `ScamPolicyCheck` is instantiated in agent/agent.py and called before the LLM replies.
+    The state is the raw user message (the transaction description).
+    The verdict and per-signal probabilities are stored in the agent's decision log.
+
+How to reuse it
+    Copy this file, keep the three noul questions, and reword the option descriptions for your
+    domain (e.g. phishing email classification, loan application fraud screening).
+    Adjust the HIGH_RISK_THRESHOLD and REVIEW_THRESHOLD constants to tune sensitivity.
 ```
- describe your idea ──> /hackathon in Kiro ──> your agent + decision pattern
-                                         ├─> ./kit bench    accuracy, latency, cost vs a Bedrock LLM
-                                         ├─> ./kit deploy   Amazon Bedrock AgentCore Runtime
-                                         ├─> ./kit video    a real recorded run, narrated, under 3 minutes
-                                         ├─> ./kit article  Builder Center bundle: fields, cover, figures, body
-                                         ├─> ./kit readme   README with your real numbers
-                                         └─> ./kit publish  public GitHub repo, Apache-2.0
+
+Typed questions:
+
+```python
+QUESTIONS = {
+    "unknown_recipient": Decider.noul(
+        "Is the recipient of this payment unknown, unverified, or not personally known to the sender?",
+        {
+            "true":  "the person or entity requesting payment is a stranger, has an unfamiliar name, "
+                     "or cannot be verified through a known contact or official channel",
+            "false": "the recipient is a known contact, a recognized business, or a verified official entity",
+        },
+    ),
+    "urgency_pressure": Decider.noul(
+        "Does the message use urgency, time pressure, or emotional pressure to push the sender to act immediately?",
+        {
+            "true":  "phrases like 'act now', 'urgent', 'last chance', 'emergency', 'or your account will be closed', "
+                     "or emotional appeals that discourage taking time to verify",
+            "false": "no time pressure; the sender is free to verify before acting",
+        },
+    ),
+    "unusual_payment": Decider.noul(
+        "Is the payment amount, method, or reason unusual or suspicious for a legitimate transaction?",
+        {
+            "true":  "very large or round amounts with no clear reason, requests for gift cards, "
+                     "wire transfers to unknown accounts, requests to share OTPs or PINs, "
+                     "or a reason that does not match the payment method",
+            "false": "normal amount for the stated purpose, standard payment method, no request for sensitive info",
+        },
+    ),
+}
 ```
 
-## What the hackathon asks for, and where the kit covers it
+## Measured
 
-| Requirement (official rules) | How the kit does it |
-|---|---|
-| An agent on AWS using Strands Decider 2B for a meaningful decision, paired with Amazon Bedrock | `agent/` (Strands Agents + Amazon Bedrock), deployed to AgentCore Runtime by `./kit deploy` |
-| A public repo with the agent and at least one labelled **reusable decision pattern** | `agent/decision.py` (labelled `REUSABLE DECISION PATTERN`), plus five ready patterns in `decider_kit/patterns/`; Apache-2.0; `./kit publish` |
-| An article on AWS Builder Center | `/write-article` + `./kit article` (fields, a text-free cover, figures, body with figure markers, validated) |
-| A video under 3 minutes | `./kit video`: records your real agent, narrates with Amazon Polly, no music, checks it is under 2:55 |
-| Tags: `#strands-decider-2b` plus one pattern tag | set from `PATTERN_TAG` in the article fields, video and README |
-| Original agent | the interview builds *your* idea; `./kit check` fails while the kit example is still in `agent/` |
-| Bonus: measured latency or cost vs an LLM | `./kit bench`: the same questions answered by the decider and a Bedrock LLM, with accuracy, p50/p95, cost per 1,000 and low-confidence handling |
+Decider: strands-decider-2b-hobson-v19 (ugmdu). 13 labelled cases, 39 decisions.
 
-## 30 minutes, step by step
-
-Works on macOS, Windows and Linux. Full guide: [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
-
-1. **Install Kiro** from https://kiro.dev. That is the only thing you install yourself.
-2. **In Kiro, open a new empty folder**, open the terminal, and run the install line:
-   `curl -fsSL https://raw.githubusercontent.com/Vivek0712/decider-hackathon-kit/main/install/install.sh | sh` (macOS, Linux) or `irm https://raw.githubusercontent.com/Vivek0712/decider-hackathon-kit/main/install/install.ps1 | iex`
-   (Windows). It asks first, then installs Python, the kit and the tools into your user folder.
-3. **In the Kiro chat, type `/hackathon`.** Kiro shows the three paths (AWS, fully local, the user
-   group cloud) with their time, cost and speed, sets up the one you pick, interviews you about
-   your use case and data, builds and tests your agent, shows you the app and the benchmark,
-   deploys it to AWS, drafts the article, records the video, and publishes your project to your
-   GitHub after asking.
-4. **Submit by hand:** upload the video (public), publish the article on Builder Center, and
-   submit the three links before 23 October 2026, 11:59 p.m. PT.
-
-Every step is also a command (`./kit help`; Windows `.\kit.cmd help`).
-
-## Three places to run the LLM
-
-The agent's generative part always goes through the **Strands Agents SDK** (`decider_kit/llm.py`
-gives every option as a Strands model). Pick one with `LLM_PROVIDER` in `.env`; `./kit setup` asks.
-
-| Option | What you need | Cost | Models |
-|---|---|---|---|
-| `bedrock` (default) | AWS account, Bedrock model access | a few cents | Amazon Nova (any Bedrock model via `BEDROCK_MODEL_ID`) |
-| `local` | [Ollama](https://ollama.com/download) on your machine | none | see below |
-| `ugmdu` | an AWS User Group Madurai key (the same one as the decider) | free during the hackathon | `qwen3.5-4b`, `gpt-oss-20b` (on CPU for now: about 10 to 12 s a tool-calling turn) |
-
-**Completely local, no cloud cost:** `python scripts/setup.py --llm local --mode local` runs both
-the agent's LLM (Ollama) and Strands Decider 2B on your machine. Install Ollama any one way:
-`brew install ollama` (macOS), `curl -fsSL https://ollama.com/install.sh | sh` (Linux), the
-installer from https://ollama.com/download (Windows), or
-`docker run -d -p 11434:11434 -v ollama:/root/.ollama ollama/ollama`. Then choose a model by
-size (`./kit setup` shows which fit your RAM):
-
-| Model | Download | Notes |
+| | Strands Decider 2B | qwen3.5-4b |
 |---|---|---|
-| `qwen3.5:0.8b` | 1.2 GB | tiny; simple tool calls only |
-| `granite4:3b-h` | 1.9 GB | IBM Granite 4 Micro; fast, built for tool calling |
-| `qwen3.5:2b-q4_K_M` | 1.9 GB | small Qwen3.5; reads images |
-| `qwen3.5:4b` | 4.0 GB | **recommended**: good tool use, reads images |
-| `qwen3.5:9b` | 6.6 GB | best local quality; 16 GB+ RAM |
+| Accuracy | 71.8% | 76.9% |
+| Latency p50 per decision | 2848 ms | 20582 ms |
+| Latency p95 | 3092 ms | 21588 ms |
+| Cost per 1,000 decisions | $0.0350 | $0.0000 |
+| Answered alone at confidence >= 0.7 | 54% | 100% |
+| Accuracy when confident | 76.2% | 76.9% |
 
-The four smaller ones each made the right tool call on all 5 prompts of a quick check through a
-Strands Agent on an Apple silicon laptop (median 1.4 to 4.6 s a turn; `qwen3.5:9b` was not
-measured). Five prompts is a smoke test, not a benchmark: bigger models handle harder agent
-tasks better.
-Qwen3.5's thinking is off by default for speed (`LLM_THINK=1` turns it on).
+At the median the decider was 7.2x faster than the LLM.
 
-**The submission still needs AWS and Amazon Bedrock** (the rules ask for an agent on AWS with
-Amazon Bedrock for the generative part). Build with any option; `./kit deploy` always runs the
-deployed agent on Bedrock, and `./kit check` warns if your video was recorded with another LLM.
+Reproduce with `./kit bench` (cases in `agent/eval_cases.jsonl`; charts in `submission/bench/`).
 
-## What is prebuilt
+## Run it
 
-| Piece | Where |
-|---|---|
-| One client for local / hosted / custom deciders (stdlib only, typed answers with confidence) | `decider_kit/client.py` |
-| Five labelled reusable patterns: tool selection, guardrails, policy, model routing, context and memory | `decider_kit/patterns/` |
-| Amazon Bedrock model factory and an LLM baseline for the same typed questions | `decider_kit/bedrock.py` |
-| Amazon Bedrock AgentCore Memory and Gateway, created by `./kit deploy` from `agent/features.yaml` | `decider_kit/agentcore.py` |
-| Benchmark: decider vs LLM (accuracy, latency, cost, low-confidence handling) with charts | `decider_kit/bench.py` |
-| A working example agent (reference only; `/new-agent` replaces it) | `agent/` |
-| Demo web UI: chat plus live decision panel | `demo/` |
-| AgentCore Runtime project and a deploy / invoke / destroy script | `deploy/`, `scripts/deploy.py` |
-| Video maker: Playwright recording + Polly narration + slides + ffmpeg | `scripts/make_video.py` |
-| Builder Center article builder and validator | `scripts/article.py` |
-| Machine and AWS checker, decider installer | `scripts/setup.py` |
-| Submission checker, secret scanner, progress tracker, publisher | `scripts/` |
-| Kiro steering, skills (`/hackathon`, `/new-agent`, `/decision-pattern`, `/write-article`, `/ship`, `/setup`), hooks, a spec template | `.kiro/` |
+```bash
+./kit setup        # checks your machine and AWS, sets up Strands Decider 2B (local model or hosted API)
+./kit demo         # web UI at http://localhost:8501
+./kit bench        # the decision vs an Amazon Bedrock LLM
+./kit deploy       # Amazon Bedrock AgentCore Runtime
+```
 
-**Kiro hooks included:**
-- **Session start:** shows your progress.
-- **On save:** runs the tests, scans for secrets, and checks the decision pattern is still
-  labelled.
-- **After each turn:** prints the next step.
+Requirements: Python 3.10+, AWS credentials with Amazon Bedrock access, and for deploying, Node 20+ with the AgentCore CLI (`./kit agentcore-cli`).
 
-## Strands Decider 2B in one paragraph
+## Credits
 
-An open 2-billion-parameter decision model from the Strands team. It does not write text. You
-give it a state (any text) and typed questions (yes/no, choice, score), and it returns
-calibrated probabilities in one forward pass. Your code turns those probabilities into actions.
-- Model: `StrandsAgents/strands-decider-2B-qwen3.5-v1-2610` (Apache-2.0).
-- Code: [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider).
-- Background: [Introducing Strands Decider](https://strandsagents.com/blog/introducing-strands-decider/).
+Built with the AWS User Group Madurai Strands Decider hackathon kit (https://github.com/awsugmdu). The kit's reusable library (`decider_kit/`, the demo UI, the video and article tooling, and the Kiro steering, skills and hooks) is the user group's; the agent in `agent/` is mine. Strands Decider: https://github.com/strands-labs/strands-decider (Apache-2.0).
 
-## Honest by default
-
-The kit writes numbers only from real runs:
-- **Narration:** the video's narration states what the decider actually decided.
-- **Benchmark:** reports where the decider ran and which model it was.
-- **Tuning:** the article builder asks you to tune on one split and report on the other.
-
-If your decider is slower than the LLM on your setup (a hosted or CPU decider can be), the kit
-says so. Cost, privacy and calibrated confidence are still yours to show.
-
-## FAQ
-
-- **Can I submit the example agent?** No. The rules require an original agent; `./kit check` and
-  `./kit publish` refuse while it is still there.
-- **Do I need a GPU?** No. Use the hosted API, or a local model on Apple silicon.
-- **Where do keys go?** In `.env`, which git ignores. A hook blocks keys in any other file.
-- **How do I get an AWS User Group Madurai API key?** Through the user group's platform
-  (https://www.awsugmdu.in). Keys have per-minute and monthly limits; ask there for more.
-- **Can I build without any cloud cost?** Yes: `LLM_PROVIDER=local` and `DECIDER_MODE=local`
-  (see [Three places to run the LLM](#three-places-to-run-the-llm)). Deploying and submitting
-  need AWS.
-- **Can the decider read images?** Yes: a local decider with `DECIDER_VISION=1`, or the hosted
-  API (always on; no setting needed). Sample photos: your own, or openly licensed ones with
-  `./kit data images <name> --query "..."` (Wikimedia Commons, credits recorded;
-  check each one). Pass `images=[...]` (paths, bytes or base64) to `Decider.ask`, and add `"images"` to eval
-  cases for `./kit bench`.
-- **Can I change the Bedrock model?** Yes. Every model id is an environment variable in `.env`,
-  Amazon Nova by default: `BEDROCK_MODEL_ID` (the agent), `BEDROCK_SMALL_MODEL_ID`,
-  `BEDROCK_MEDIUM_MODEL_ID`, `BEDROCK_LARGE_MODEL_ID` (model routing tiers) and
-  `BENCH_LLM_MODEL_ID` (the benchmark's LLM). `./kit setup` asks; `./kit deploy` passes them to
-  the runtime.
-- **Can my agent use more than one pattern?** No: the rules ask for exactly one decision pattern
-  and one pattern tag. Pick the decision that matters most for your demo.
-- **Can it use AgentCore Memory or Gateway?** Yes. `/new-agent` asks; turn them on in
-  `agent/features.yaml` and `./kit deploy` creates them with the AgentCore CLI. With Memory the
-  decider picks which memories go in the prompt and what is stored (`#context-memory`,
-  `examples/memory_agent.py`); with Gateway it picks which tool handles a request
-  (`#tool-selection`, `examples/gateway_agent.py`). See `decider_kit/agentcore.py`.
-
-Licence: Apache-2.0. Credits: AWS User Group Madurai. It uses Strands Agents and Strands Decider
-(Apache-2.0). It is not an official AWS project.
+Licence: Apache-2.0 (see LICENSE).

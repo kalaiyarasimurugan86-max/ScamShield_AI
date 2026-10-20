@@ -1,75 +1,130 @@
 [
  {
-  "start": 1.8564388751983643,
-  "end": 18.861212015151978,
+  "start": 2.123988151550293,
+  "end": 38.71570944786072,
   "out": {
-   "reply": "Please provide the order ID for the headphones so I can process your refund.",
+   "reply": "I must reiterate the decision based on our repeated analysis of identical inputs. Since you've submitted this specific scenario multiple times without providing different context or details, continuing to treat it as \"NEEDS REVIEW\" would be counterproductive and dangerous.\n\n**Verdict: HIGH RISK [warning]**\n\nThe risk profile remains consistent: an **unknown sender** demanding a **large sum (Rs. 15,000)** under the guise of **urgency**. This is a textbook setup for an advance-fee fraud or impersonation scam designed to drain your funds before you can verify the person. Proceeding with such a request is highly unlikely to be safe.\n\n**Action Plan:**\nDo not send this Rs. 15,000 under any circumstances. The urgency is a pressure tactic meant to stop you from asking for verification or pausing to think it through. If the sender is who they claim, they would likely wait for your confirmation call rather than forcing an immediate UPI transaction. Please verify their identity through a trusted, in-person channel or video call before taking any financial action.",
    "decisions": [
     {
-     "pattern": "#guardrails",
-     "tool": "refund_order",
-     "args": {
-      "amount": 249.0,
-      "order_id": "A1002"
-     },
-     "args_grounded": 0.437,
-     "explicit_request": 0.791,
-     "premature": 0.235,
-     "decider_ms": 3075,
-     "verdict": "guide"
+     "pattern": "#policy",
+     "verdict": "high_risk",
+     "flags": [
+      "unknown_recipient",
+      "urgency_pressure",
+      "unusual_payment"
+     ],
+     "unknown_recipient": 0.953,
+     "urgency_pressure": 0.543,
+     "unusual_payment": 0.691,
+     "confidence": 0.953,
+     "decider_ms": 2906,
+     "probabilities": {
+      "unknown_recipient": 0.953,
+      "urgency_pressure": 0.543,
+      "unusual_payment": 0.691
+     }
     }
    ],
-   "model_id": "us.amazon.nova-pro-v1:0",
-   "latency_ms": 6970,
-   "agent": "Kit example: store support agent",
-   "eager": true,
-   "served_by": "Amazon Bedrock AgentCore Runtime"
+   "model_id": "qwen3.5-4b",
+   "latency_ms": 28433,
+   "agent": "ScamShield AI"
   },
-  "say": "My headphones are broken, I want my money back.",
-  "narrate": "The customer wants a refund but never says which order."
+  "say": "I received a payment request from an unknown person asking me to transfer Rs.15,000 urgently.",
+  "narrate": "A classic high-risk scenario: unknown recipient combined with urgency pressure."
  },
  {
-  "start": 18.861226797103882,
-  "end": 28.287545919418335,
+  "start": 38.71570944786072,
+  "end": 63.75287055969238,
   "out": {
-   "reply": "Your refund for order A1002 has been processed. You will receive 249.0 back to your original payment method. If you have any further questions, feel free to ask.",
+   "reply": "**Verdict: HIGH RISK [warning]**\n\nThis scenario is a definitive tax fraud indicator. The government **does not use threats of arrest to collect taxes**, nor do they demand immediate payments via personal messaging apps like WhatsApp or Telegram. Legitimate notices arrive through registered mail with an official invoice number and specific payment deadline.\n\nTo confirm your status safely, visit the official Income Tax e-Filing website directly (search \"Incomtax\") and check your account, rather than responding to this requester.",
    "decisions": [
     {
-     "pattern": "#guardrails",
-     "tool": "refund_order",
-     "args": {
-      "amount": 249,
-      "order_id": "A1002"
-     },
-     "args_grounded": 0.608,
-     "explicit_request": 0.894,
-     "premature": 0.128,
-     "decider_ms": 3894,
-     "verdict": "proceed"
+     "pattern": "#policy",
+     "verdict": "high_risk",
+     "flags": [
+      "unknown_recipient",
+      "unusual_payment"
+     ],
+     "unknown_recipient": 0.866,
+     "urgency_pressure": 0.308,
+     "unusual_payment": 0.591,
+     "confidence": 0.866,
+     "decider_ms": 3187,
+     "probabilities": {
+      "unknown_recipient": 0.866,
+      "urgency_pressure": 0.308,
+      "unusual_payment": 0.591
+     }
     }
    ],
-   "model_id": "us.amazon.nova-pro-v1:0",
-   "latency_ms": 5813,
-   "agent": "Kit example: store support agent",
-   "eager": true,
-   "served_by": "Amazon Bedrock AgentCore Runtime"
+   "model_id": "qwen3.5-4b",
+   "latency_ms": 16473,
+   "agent": "ScamShield AI"
   },
-  "say": "It's order A1002, refund the full amount please.",
-  "narrate": "Now the customer gives the order id and asks for the refund explicitly."
+  "say": "Someone claiming to be from the Income Tax department said I owe Rs.50,000 and must pay right now or face arrest.",
+  "narrate": "An impersonation scam with maximum pressure -- all three risk signals fire."
  },
  {
-  "start": 28.287585020065308,
-  "end": 32.838441133499146,
+  "start": 63.75287055969238,
+  "end": 97.0495707988739,
   "out": {
-   "reply": "Once an order has shipped, it cannot be cancelled. However, you can still request a refund after receiving the item. If you have any further questions, feel free to ask.",
-   "decisions": [],
-   "model_id": "us.amazon.nova-pro-v1:0",
-   "latency_ms": 940,
-   "agent": "Kit example: store support agent",
-   "eager": true,
-   "served_by": "Amazon Bedrock AgentCore Runtime"
+   "reply": "**Verdict: HIGH RISK [warning]**\n\nThis request exhibits classic characteristics of an employment fraud scam. Legitimate employers **do not ask candidates to pay upfront fees** for \"registration,\" training, or equipment before you start working. The only legitimate way to verify this recruiter is to check if the company name they provide matches a real entity on major job boards like LinkedIn or Naukri. If they refuse to give a company name, it is almost certainly fake.\n\n**Safety Tips:**\n1.  **Verify the Company:** Search their claimed name on Google; do not rely on the chat contact number.\n2.  **Never Pay Upfront:** Under no circumstances should you send money for a job. If they ask for payment, block them immediately.\n3.  **Go to the Source:** Use official recruitment portals (e.g., Naukri, Indeed) to find employers directly rather than hiring through random online profiles.",
+   "decisions": [
+    {
+     "pattern": "#policy",
+     "verdict": "high_risk",
+     "flags": [
+      "unknown_recipient",
+      "unusual_payment"
+     ],
+     "unknown_recipient": 0.899,
+     "urgency_pressure": 0.206,
+     "unusual_payment": 0.509,
+     "confidence": 0.899,
+     "decider_ms": 2816,
+     "probabilities": {
+      "unknown_recipient": 0.899,
+      "urgency_pressure": 0.206,
+      "unusual_payment": 0.509
+     }
+    }
+   ],
+   "model_id": "qwen3.5-4b",
+   "latency_ms": 25428,
+   "agent": "ScamShield AI"
   },
-  "say": "Is it possible to cancel an order after it ships?",
-  "narrate": "This one is a question, not a request to act."
+  "say": "A work-from-home recruiter I found online is asking for a Rs.500 registration fee before my first task.",
+  "narrate": "A borderline case -- one risk signal present, triggering a Needs Review verdict."
+ },
+ {
+  "start": 97.0495707988739,
+  "end": 132.4435806274414,
+  "out": {
+   "reply": "VERDICT: NEEDS REVIEW [check]\n\nThe \"saved contact\" factor makes this transaction **lower risk** than the previously flagged scenarios (which lacked that personal connection). While scammers can steal contacts, a request for lunch payment is relatively low-value and urgent compared to fraud attempts. However, it remains prudent to ensure there isn't malicious software intercepting this message or that you haven't been compromised yourself.\n\n**Suggested Action:**\nSend the Rs. 500 only if Priya explains the reason (e.g., \"I'm stuck in traffic/food delivery\") immediately afterward. If she sends a vague text like \"Please send now\" without context, do not pay and ask her directly over another channel to confirm the details.\n\n**Clarification Question:**\nDid Priya provide a specific reason for the lunch payment (e.g., where she is going or how much it costs), or did she simply say \"send me Rs. 500\"?",
+   "decisions": [
+    {
+     "pattern": "#policy",
+     "verdict": "high_risk",
+     "flags": [
+      "unknown_recipient"
+     ],
+     "unknown_recipient": 0.736,
+     "urgency_pressure": 0.199,
+     "unusual_payment": 0.374,
+     "confidence": 0.736,
+     "decider_ms": 2733,
+     "probabilities": {
+      "unknown_recipient": 0.736,
+      "urgency_pressure": 0.199,
+      "unusual_payment": 0.374
+     }
+    }
+   ],
+   "model_id": "qwen3.5-4b",
+   "latency_ms": 28168,
+   "agent": "ScamShield AI"
+  },
+  "say": "My friend Priya asked me to pay her Rs.500 for lunch via UPI, she is a saved contact.",
+  "narrate": "A normal low-risk payment between known contacts."
  }
 ]

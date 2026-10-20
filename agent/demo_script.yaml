@@ -1,16 +1,23 @@
-title: "ScamShield AI — Live Demo"
+title: "ScamShield AI"
+pitch: "Describe any payment request in plain language and get an instant scam risk verdict before you send."
+intro: "ScamShield AI uses Strands Decider to classify payment transactions as Low Risk, High Risk, or Needs Review."
+outro: "ScamShield AI: fast, calibrated payment scam detection powered by Strands Decider and Amazon Bedrock."
+
+features:
+  - "Instant risk verdict from a plain-language transaction description"
+  - "Three calibrated risk signals: unknown recipient, urgency pressure, unusual payment"
+  - "Needs Review cases ask a follow-up question instead of guessing"
+  - "Tailored safety tips for each flag type"
+
 turns:
-  - message: "I received a payment request from an unknown person asking me to transfer ₹15,000 urgently."
-    narration: "A classic high-risk scenario: unknown recipient plus urgency. Watch the decision panel."
+  - say: "I received a payment request from an unknown person asking me to transfer Rs.15,000 urgently."
+    narrate: "A classic high-risk scenario: unknown recipient combined with urgency pressure."
 
-  - message: "My friend Priya asked me to pay her ₹500 for lunch via UPI — she is a saved contact."
-    narration: "A normal, low-risk transaction between known contacts."
+  - say: "Someone claiming to be from the Income Tax department said I owe Rs.50,000 and must pay right now or face arrest."
+    narrate: "An impersonation scam with maximum pressure -- all three risk signals fire."
 
-  - message: "Someone claiming to be from the Income Tax department said I owe ₹50,000 and must pay right now or face arrest."
-    narration: "Impersonation scam with maximum pressure. Three signals fire simultaneously."
+  - say: "A work-from-home recruiter I found online is asking for a Rs.500 registration fee before my first task."
+    narrate: "A borderline case -- one risk signal present, triggering a Needs Review verdict."
 
-  - message: "A work-from-home recruiter I found online is asking for a ₹500 registration fee before my first task."
-    narration: "Needs Review: one risk signal present. ScamShield asks a clarifying question."
-
-  - message: "I need to pay my electricity bill of ₹1,340 through the official BESCOM portal."
-    narration: "Clean bill payment — no risk signals. ScamShield confirms it is safe."
+  - say: "My friend Priya asked me to pay her Rs.500 for lunch via UPI, she is a saved contact."
+    narrate: "A normal low-risk payment between known contacts."

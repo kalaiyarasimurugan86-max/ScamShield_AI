@@ -1,15 +1,15 @@
-0. This store support agent talks through Amazon Bedrock. For this demo it is told to act without asking, and Strands Decider 2B checks every refund or cancellation before it runs.
+0. ScamShield AI uses Strands Decider to classify payment transactions as Low Risk, High Risk, or Needs Review.
 
-1. A store support agent that can refund and cancel orders, and cannot do it to the wrong order. It can look up, refund and cancel orders in chat; check every irreversible action with Strands Decider 2B before it runs; send unsure cases to a human instead of guessing; run on Amazon Bedrock AgentCore Runtime.
+1. Describe any payment request in plain language and get an instant scam risk verdict before you send. What it does: Instant risk verdict from a plain-language transaction description. Three calibrated risk signals: unknown recipient, urgency pressure, unusual payment. Needs Review cases ask a follow-up question instead of guessing. Tailored safety tips for each flag type.
 
-2. The agent you are about to see is running on Amazon Bedrock AgentCore Runtime.
+2. A classic high-risk scenario: unknown recipient combined with urgency pressure. The decider scored unknown recipient 0.95, urgency pressure 0.54, unusual payment 0.69, so the verdict was high_risk, in 2.9 seconds.
 
-3. The customer wants a refund but never says which order. The decider scored args grounded 0.44, explicit request 0.79, premature 0.23, so the verdict was guide, in 3.1 seconds.
+3. An impersonation scam with maximum pressure -- all three risk signals fire. The decider scored unknown recipient 0.87, urgency pressure 0.31, unusual payment 0.59, so the verdict was high_risk, in 3.2 seconds.
 
-4. Now the customer gives the order id and asks for the refund explicitly. The decider scored args grounded 0.61, explicit request 0.89, premature 0.13, so the verdict was proceed, in 3.9 seconds.
+4. A borderline case -- one risk signal present, triggering a Needs Review verdict. The decider scored unknown recipient 0.90, urgency pressure 0.21, unusual payment 0.51, so the verdict was high_risk, in 2.8 seconds.
 
-5. This one is a question, not a request to act. No decision was needed on this turn.
+5. A normal low-risk payment between known contacts. The decider scored unknown recipient 0.74, urgency pressure 0.20, unusual payment 0.37, so the verdict was high_risk, in 2.7 seconds.
 
-6. On 24 labelled decisions, with the decider running locally on this machine, Strands Decider was 79% accurate at a median of 295 milliseconds, against 96% and 1276 milliseconds for the Bedrock LLM asked the same questions.
+6. On 39 labelled decisions, with the decider on the AWS User Group Madurai hosted API, Strands Decider was 72% accurate at a median of 2848 milliseconds, against 77% and 20582 milliseconds for a hosted open LLM asked the same questions.
 
-7. One forward pass per decision, typed answers with a confidence the code can branch on, and Amazon Bedrock for the conversation.
+7. ScamShield AI: fast, calibrated payment scam detection powered by Strands Decider and Amazon Bedrock.
