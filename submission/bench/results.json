@@ -1,0 +1,566 @@
+{
+ "decider_model": "strands-decider-2b-hobson-v19",
+ "rows": [
+  {
+   "i": 0,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "yes",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9534
+    },
+    "urgency_pressure": {
+     "label": "yes",
+     "confidence": 0.5435
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.6907
+    }
+   },
+   "decider_ms": 2998.872499971185,
+   "decider_server_ms": 2203.5,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 21588.283299992327,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 1,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "yes",
+    "unusual_payment": "yes"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.8844
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.682
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.5896
+    }
+   },
+   "decider_ms": 3097.9437000351027,
+   "decider_server_ms": 2441.2,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20674.882999970578,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 2,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "no",
+    "unusual_payment": "yes"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.892
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.7832
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.6304
+    }
+   },
+   "decider_ms": 2809.6300000324845,
+   "decider_server_ms": 2198.2,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20500.396799994633,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 3,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "yes"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.8528
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.7717
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.69
+    }
+   },
+   "decider_ms": 3091.968900000211,
+   "decider_server_ms": 2397.5,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20476.119099999778,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 4,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "yes",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9128
+    },
+    "urgency_pressure": {
+     "label": "yes",
+     "confidence": 0.5779
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.6904
+    }
+   },
+   "decider_ms": 2763.2019000011496,
+   "decider_server_ms": 2114.9,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20454.892200010363,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 5,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.8298
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.8068
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.6034
+    }
+   },
+   "decider_ms": 2952.227000030689,
+   "decider_server_ms": 2331.4,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20462.402699980885,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 6,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.7343
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.8033
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.6862
+    }
+   },
+   "decider_ms": 2848.2848999556154,
+   "decider_server_ms": 2134.7,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.8
+    }
+   },
+   "llm_ms": 20496.936800016556,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 7,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.7809
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.7955
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.5431
+    }
+   },
+   "decider_ms": 2837.8538000397384,
+   "decider_server_ms": 2291.0,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.95
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.95
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.95
+    }
+   },
+   "llm_ms": 20693.86579998536,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 8,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.6665
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.773
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.623
+    }
+   },
+   "decider_ms": 2687.64319998445,
+   "decider_server_ms": 2072.3,
+   "llm": {
+    "unknown_recipient": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20581.759699969552,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 9,
+   "expected": {
+    "unknown_recipient": "no",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.5409
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.7828
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.6835
+    }
+   },
+   "decider_ms": 2655.3563000052236,
+   "decider_server_ms": 2056.3,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "no",
+     "confidence": 0.8
+    }
+   },
+   "llm_ms": 20597.42979996372,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 10,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9446
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.8035
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.7322
+    }
+   },
+   "decider_ms": 2990.4084999579936,
+   "decider_server_ms": 2366.8,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20643.612399988342,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 11,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "no",
+    "unusual_payment": "yes"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.9433
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.6162
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.6962
+    }
+   },
+   "decider_ms": 2733.978300006129,
+   "decider_server_ms": 2088.9,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 104883.73480003793,
+   "llm_cost": 0.0
+  },
+  {
+   "i": 12,
+   "expected": {
+    "unknown_recipient": "yes",
+    "urgency_pressure": "no",
+    "unusual_payment": "no"
+   },
+   "decider": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 0.8347
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 0.799
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 0.5122
+    }
+   },
+   "decider_ms": 2854.089800035581,
+   "decider_server_ms": 2110.9,
+   "llm": {
+    "unknown_recipient": {
+     "label": "yes",
+     "confidence": 1.0
+    },
+    "urgency_pressure": {
+     "label": "no",
+     "confidence": 1.0
+    },
+    "unusual_payment": {
+     "label": "yes",
+     "confidence": 1.0
+    }
+   },
+   "llm_ms": 20340.99450003123,
+   "llm_cost": 0.0
+  }
+ ],
+ "summary": {
+  "decider": {
+   "accuracy": 0.7179,
+   "decisions": 39,
+   "per_question": {
+    "unknown_recipient": 0.5385,
+    "urgency_pressure": 0.9231,
+    "unusual_payment": 0.6923
+   },
+   "latency_p50_ms": 2848.3,
+   "latency_p95_ms": 3092.0,
+   "usd_per_1k_decisions": 0.035,
+   "confident_share": 0.5385,
+   "accuracy_when_confident": 0.7619,
+   "sent_to_human_at_threshold": 18
+  },
+  "llm": {
+   "accuracy": 0.7692,
+   "decisions": 39,
+   "per_question": {
+    "unknown_recipient": 0.6154,
+    "urgency_pressure": 1.0,
+    "unusual_payment": 0.6923
+   },
+   "latency_p50_ms": 20581.8,
+   "latency_p95_ms": 21588.3,
+   "usd_per_1k_decisions": 0.0,
+   "confident_share": 1.0,
+   "accuracy_when_confident": 0.7692,
+   "sent_to_human_at_threshold": 0
+  },
+  "speedup_p50": 7.23
+ },
+ "threshold": 0.7,
+ "llm_model": "qwen3.5-4b",
+ "llm_provider": "ugmdu",
+ "llm_where": "AWS User Group Madurai cloud (qwen3.5-4b)",
+ "decider_url": "https://da25tnxy06gjk.cloudfront.net",
+ "decider_mode": "ugmdu",
+ "ran_at": 1792465092.019669,
+ "split": "test"
+}

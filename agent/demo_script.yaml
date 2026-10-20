@@ -1,0 +1,16 @@
+title: "ScamShield AI — Live Demo"
+turns:
+  - message: "I received a payment request from an unknown person asking me to transfer ₹15,000 urgently."
+    narration: "A classic high-risk scenario: unknown recipient plus urgency. Watch the decision panel."
+
+  - message: "My friend Priya asked me to pay her ₹500 for lunch via UPI — she is a saved contact."
+    narration: "A normal, low-risk transaction between known contacts."
+
+  - message: "Someone claiming to be from the Income Tax department said I owe ₹50,000 and must pay right now or face arrest."
+    narration: "Impersonation scam with maximum pressure. Three signals fire simultaneously."
+
+  - message: "A work-from-home recruiter I found online is asking for a ₹500 registration fee before my first task."
+    narration: "Needs Review: one risk signal present. ScamShield asks a clarifying question."
+
+  - message: "I need to pay my electricity bill of ₹1,340 through the official BESCOM portal."
+    narration: "Clean bill payment — no risk signals. ScamShield confirms it is safe."

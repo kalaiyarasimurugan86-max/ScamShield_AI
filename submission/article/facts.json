@@ -1,0 +1,101 @@
+{
+ "pattern_tag": "#policy",
+ "agentcore_features": [],
+ "pattern_doc": "REUSABLE DECISION PATTERN: payment scam risk classifier  (#policy)\n\nWhat it does\n    Before the agent responds to a payment-related message, Strands Decider 2B reads the\n    transaction description and answers three risk questions:\n    - Is the recipient unknown or unverified?\n    - Is there urgency pressure (\"act now\", \"urgent\", \"limited time\")?\n    - Is the amount or payment method unusual or suspicious?\n    The answers are combined into a verdict: Low Risk, High Risk, or Needs Review.\n    High Risk blocks the action with a warning; Needs Review asks the user for more detail;\n    Low Risk lets the conversation continue normally.\n\nTyped questions and options\n    unknown_recipient (noul): P(yes) = probability the recipient is unknown/unverified.\n    urgency_pressure  (noul): P(yes) = probability urgency is being used to rush the user.\n    unusual_payment   (noul): P(yes) = probability the amount or method is suspicious.\n    See QUESTIONS below for full descriptions.\n\nWiring\n    `ScamPolicyCheck` is instantiated in agent/agent.py and called before the LLM replies.\n    The state is the raw user message (the transaction description).\n    The verdict and per-signal probabilities are stored in the agent's decision log.\n\nHow to reuse it\n    Copy this file, keep the three noul questions, and reword the option descriptions for your\n    domain (e.g. phishing email classification, loan application fraud screening).\n    Adjust the HIGH_RISK_THRESHOLD and REVIEW_THRESHOLD constants to tune sensitivity.",
+ "questions_code": "QUESTIONS = {\n    \"unknown_recipient\": Decider.noul(\n        \"Is the recipient of this payment unknown, unverified, or not personally known to the sender?\",\n        {\n            \"true\":  \"the person or entity requesting payment is a stranger, has an unfamiliar name, \"\n                     \"or cannot be verified through a known contact or official channel\",\n            \"false\": \"the recipient is a known contact, a recognized business, or a verified official entity\",\n        },\n    ),\n    \"urgency_pressure\": Decider.noul(\n        \"Does the message use urgency, time pressure, or emotional pressure to push the sender to act immediately?\",\n        {\n            \"true\":  \"phrases like 'act now', 'urgent', 'last chance', 'emergency', 'or your account will be closed', \"\n                     \"or emotional appeals that discourage taking time to verify\",\n            \"false\": \"no time pressure; the sender is free to verify before acting\",\n        },\n    ),\n    \"unusual_payment\": Decider.noul(\n        \"Is the payment amount, method, or reason unusual or suspicious for a legitimate transaction?\",\n        {\n            \"true\":  \"very large or round amounts with no clear reason, requests for gift cards, \"\n                     \"wire transfers to unknown accounts, requests to share OTPs or PINs, \"\n                     \"or a reason that does not match the payment method\",\n            \"false\": \"normal amount for the stated purpose, standard payment method, no request for sensitive info\",\n        },\n    ),\n}",
+ "agent_md": "# Use case\n\n- **Pitch:** ScamShield AI analyzes payment transaction descriptions and classifies them as Low Risk, High Risk, or Needs Review \u00e2\u20ac\u201d before you send a single rupee.\n- **Who it is for:** anyone making or receiving digital payments (UPI, bank transfer, online requests) who wants a quick scam check before acting.\n- **Features:**\n  - describe any payment request in plain language and get an instant risk verdict;\n  - Strands Decider 2B checks three risk signals: unknown recipient, urgency pressure, unusual amount or method;\n  - red flag explanation with tailored safety tips;\n  - Needs Review cases ask for more detail instead of guessing;\n  - deployed on Amazon Bedrock AgentCore Runtime.\n- **The decision handed to Strands Decider 2B:** given a transaction description, does it show signs of being a scam? (`#policy`)\n- **Why a decision model:** risk classification must be fast, consistent and explainable \u00e2\u20ac\u201d a calibrated probability per signal is far more useful than a freeform LLM guess.\n- **Amazon Bedrock:** the conversation and tool use (Amazon Nova Pro by default).\n",
+ "llm_provider_local_runs": "ugmdu",
+ "agent_name": "ScamShield AI",
+ "bench": {
+  "summary": {
+   "decider": {
+    "accuracy": 0.7179,
+    "decisions": 39,
+    "per_question": {
+     "unknown_recipient": 0.5385,
+     "urgency_pressure": 0.9231,
+     "unusual_payment": 0.6923
+    },
+    "latency_p50_ms": 2848.3,
+    "latency_p95_ms": 3092.0,
+    "usd_per_1k_decisions": 0.035,
+    "confident_share": 0.5385,
+    "accuracy_when_confident": 0.7619,
+    "sent_to_human_at_threshold": 18
+   },
+   "llm": {
+    "accuracy": 0.7692,
+    "decisions": 39,
+    "per_question": {
+     "unknown_recipient": 0.6154,
+     "urgency_pressure": 1.0,
+     "unusual_payment": 0.6923
+    },
+    "latency_p50_ms": 20581.8,
+    "latency_p95_ms": 21588.3,
+    "usd_per_1k_decisions": 0.0,
+    "confident_share": 1.0,
+    "accuracy_when_confident": 0.7692,
+    "sent_to_human_at_threshold": 0
+   },
+   "speedup_p50": 7.23
+  },
+  "decider_model": "strands-decider-2b-hobson-v19",
+  "decider_mode": "ugmdu",
+  "llm_model": "qwen3.5-4b",
+  "cases": 13,
+  "split": "test",
+  "threshold": 0.7
+ },
+ "bench_table": "Decider: strands-decider-2b-hobson-v19 (ugmdu). 13 labelled cases, 39 decisions.\n\n| | Strands Decider 2B | qwen3.5-4b |\n|---|---|---|\n| Accuracy | 71.8% | 76.9% |\n| Latency p50 per decision | 2848 ms | 20582 ms |\n| Latency p95 | 3092 ms | 21588 ms |\n| Cost per 1,000 decisions | $0.0350 | $0.0000 |\n| Answered alone at confidence >= 0.7 | 54% | 100% |\n| Accuracy when confident | 76.2% | 76.9% |\n\nAt the median the decider was 7.2x faster than the LLM.\n",
+ "demo_turns": [
+  {
+   "user": "My headphones are broken, I want my money back.",
+   "reply": "Please provide the order ID for the headphones so I can process your refund.",
+   "decisions": [
+    {
+     "pattern": "#guardrails",
+     "tool": "refund_order",
+     "args": {
+      "amount": 249.0,
+      "order_id": "A1002"
+     },
+     "args_grounded": 0.437,
+     "explicit_request": 0.791,
+     "premature": 0.235,
+     "decider_ms": 3075,
+     "verdict": "guide"
+    }
+   ],
+   "latency_ms": 6970
+  },
+  {
+   "user": "It's order A1002, refund the full amount please.",
+   "reply": "Your refund for order A1002 has been processed. You will receive 249.0 back to your original payment method. If you have any further questions, feel free to ask.",
+   "decisions": [
+    {
+     "pattern": "#guardrails",
+     "tool": "refund_order",
+     "args": {
+      "amount": 249,
+      "order_id": "A1002"
+     },
+     "args_grounded": 0.608,
+     "explicit_request": 0.894,
+     "premature": 0.128,
+     "decider_ms": 3894,
+     "verdict": "proceed"
+    }
+   ],
+   "latency_ms": 5813
+  },
+  {
+   "user": "Is it possible to cancel an order after it ships?",
+   "reply": "Once an order has shipped, it cannot be cancelled. However, you can still request a refund after receiving the item. If you have any further questions, feel free to ask.",
+   "decisions": [],
+   "latency_ms": 940
+  }
+ ],
+ "repo_url": "",
+ "video_url": ""
+}
